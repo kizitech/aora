@@ -5,37 +5,37 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
 import { CustomButton, FormField } from "../../components";
-// import { getCurrentUser, signIn } from "../../lib/appwrite";
+import { signIn } from "../../lib/appwrite";
 // import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignIn = () => {
   // const { setUser, setIsLogged } = useGlobalContext();
-  const [isSubmitting, setSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
   const submit = async () => {
-    // if (form.email === "" || form.password === "") {
-    //   Alert.alert("Error", "Please fill in all fields");
-    // }
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
+    }
 
-    // setSubmitting(true);
+    setIsSubmitting(true);
 
-    // try {
-    //   await signIn(form.email, form.password);
-    //   const result = await getCurrentUser();
-    //   setUser(result);
-    //   setIsLogged(true);
+    try {
+      await signIn(form.email, form.password);
+      //   const result = await getCurrentUser();
+      //   setUser(result);
+      //   setIsLogged(true);
 
-    //   Alert.alert("Success", "User signed in successfully");
-    //   router.replace("/home");
-    // } catch (error) {
-    //   Alert.alert("Error", error.message);
-    // } finally {
-    //   setSubmitting(false);
-    // }
+      Alert.alert("Success", "User signed in successfully");
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
