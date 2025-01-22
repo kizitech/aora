@@ -9,13 +9,13 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 import { EmptyState, InfoBox, VideoCard } from "../../components";
 
 const Profile = () => {
-    const { user, setUser, setIsLogged } = useGlobalContext();
+    const { user, setUser, setIsLoggedIn } = useGlobalContext();
     const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
 
     const logout = async () => {
         await signOut();
         setUser(null);
-        setIsLogged(false);
+        setIsLoggedIn(false);
 
         router.replace("/sign-in");
     };
@@ -75,7 +75,7 @@ const Profile = () => {
                                 containerStyles="mr-10"
                             />
                             <InfoBox
-                                title="1.2k"
+                                title="4.4k"
                                 subtitle="Followers"
                                 titleStyles="text-xl"
                             />
