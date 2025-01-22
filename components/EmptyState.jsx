@@ -19,7 +19,7 @@ const EmptyState = ({ title, subtitle, btnText }) => {
       <Text className="text-sm font-pmedium text-gray-100">{subtitle}</Text>
 
       <CustomButton
-        title={btnText}
+        title={btnText || "Create a Video"}
         handlePress={() => router.push("/home")}
         containerStyles="w-full my-5"
       />
