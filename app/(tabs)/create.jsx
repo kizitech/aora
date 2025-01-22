@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { router } from "expo-router";
-import { ResizeMode, Video } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
 import * as ImagePicker from "expo-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -10,6 +10,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    StyleSheet,
 } from "react-native";
 
 import { icons } from "../../constants";
@@ -27,9 +28,14 @@ const Create = () => {
         prompt: "",
     });
 
+    const player = useVideoPlayer(form.video?.uri || "", (player) => {
+        player.loop = false;
+    });
+
+
     const openPicker = async (selectType) => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: selectType === 'image' ? ImagePicker.MediaTypeOptions.Images : ImagePicker.MediaTypeOptions.Videos,
+            mediaTypes: selectType === 'image' ? ['images'] : ['videos'],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -54,7 +60,9 @@ const Create = () => {
                 Alert.alert("Document picked", JSON.stringify(result, null, 2));
             }, 100);
         }
+
     };
+
 
     const submit = async () => {
         if (
@@ -87,7 +95,11 @@ const Create = () => {
 
             setUploading(false);
         }
+        console.log("Video file:", form.video);
+        console.log("Thumbnail file:", form.thumbnail);
+
     };
+
 
     return (
         <SafeAreaView className="bg-primary h-full">
@@ -109,13 +121,13 @@ const Create = () => {
 
                     <TouchableOpacity onPress={() => openPicker("video")}>
                         {form.video ? (
-                            <Video
-                                source={{ uri: form.video.uri }}
-                                className="w-full h-64 rounded-2xl"
-                                useNativeControls
-                                resizeMode={ResizeMode.COVER}
-                                isLooping
-                            />
+                            <View>
+                                <VideoView
+                                    style={styles.video}
+                                    player={player}
+                                    allowsFullscreen
+                                />
+                            </View>
                         ) : (
                             <View className="w-full h-40 px-4 bg-black-100 rounded-2xl border border-black-200 flex justify-center items-center">
                                 <View className="w-14 h-14 border border-dashed border-secondary-100 flex justify-center items-center">
@@ -177,5 +189,13 @@ const Create = () => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    video: {
+        width: "100%",
+        height: 200,
+        borderRadius: 16,
+    },
+});
 
 export default Create;
