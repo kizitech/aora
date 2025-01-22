@@ -74,7 +74,8 @@ const Home = () => {
                 ListEmptyComponent={() => (
                     <EmptyState
                         title="No Videos Found"
-                        subtitle="No videos created yet"
+                        btnText="Create a Video"
+                        subtitle="No videos created yet, be the first to create"
                     />
                 )}
                 refreshControl={
