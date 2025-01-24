@@ -6,7 +6,7 @@ import { icons } from "../constants";
 const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
   const [play, setPlay] = useState(false);
   const player = useVideoPlayer(video, (player) => {
-    player.loop = false; // Set loop as needed
+    player.loop = false;
   });
 
   return (
