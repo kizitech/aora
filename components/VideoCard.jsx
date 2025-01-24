@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { VideoView, useVideoPlayer } from "expo-video"; // Import from expo-video
+import { VideoView, useVideoPlayer } from "expo-video";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { icons } from "../constants";
 
@@ -52,7 +52,7 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
           nativeControls
           onPlaybackStatusUpdate={(status) => {
             if (status.didJustFinish) {
-              setPlay(false); // Reset to thumbnail state
+              setPlay(false);
             }
           }}
         />
