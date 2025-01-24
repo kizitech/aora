@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { VideoView, useVideoPlayer } from "expo-video"; // Import from expo-video
+import { VideoView, useVideoPlayer } from "expo-video";
 import * as Animatable from "react-native-animatable";
 import {
   FlatList,
@@ -32,7 +32,7 @@ const zoomOut = {
 const TrendingItem = ({ activeItem, item }) => {
   const [play, setPlay] = useState(false);
   const player = useVideoPlayer(item.video, (player) => {
-    player.loop = false; // Set loop as needed
+    player.loop = false;
   });
 
   return (
@@ -45,7 +45,6 @@ const TrendingItem = ({ activeItem, item }) => {
         <VideoView
           player={player}
           style={styles.video}
-          className="w-52 h-72 rounded-[33px] mt-3 bg-black"
           allowsFullscreen
           allowsPictureInPicture
           nativeControls
@@ -61,7 +60,7 @@ const TrendingItem = ({ activeItem, item }) => {
           activeOpacity={0.7}
           onPress={() => {
             setPlay(true);
-            player.play(); // Start playing the video
+            player.play();
           }}
         >
           <ImageBackground
