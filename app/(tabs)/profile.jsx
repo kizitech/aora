@@ -36,6 +36,7 @@ const Profile = () => {
                 )}
                 ListEmptyComponent={() => (
                     <EmptyState
+                        route={"/create"}
                         title="No Videos Found"
                         subtitle="No videos found for this profile"
                     />

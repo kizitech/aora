@@ -4,7 +4,7 @@ import { View, Text, Image } from "react-native";
 import { images } from "../constants";
 import CustomButton from "./CustomButton";
 
-const EmptyState = ({ title, subtitle, btnText }) => {
+const EmptyState = ({ title, subtitle, btnText, route }) => {
   return (
     <View className="flex justify-center items-center px-4">
       <Image
@@ -20,7 +20,7 @@ const EmptyState = ({ title, subtitle, btnText }) => {
 
       <CustomButton
         title={btnText || "Create a Video"}
-        handlePress={() => router.push("/home")}
+        handlePress={() => router.push(route)}
         containerStyles="w-full my-5"
       />
     </View>

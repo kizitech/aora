@@ -77,6 +77,7 @@ const Home = () => {
                 )}
                 ListEmptyComponent={() => (
                     <EmptyState
+                        route={"/create"}
                         title="No Videos Found"
                         subtitle="No videos created yet, be the first to create"
                     />

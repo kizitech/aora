@@ -47,6 +47,7 @@ const Search = () => {
         )}
         ListEmptyComponent={() => (
           <EmptyState
+            route={"/home"}
             btnText="Back to Explore"
             title="No Videos Found"
             subtitle="No videos found for this search query"
