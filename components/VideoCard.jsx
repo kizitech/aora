@@ -51,8 +51,8 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
           allowsPictureInPicture
           nativeControls
           onPlaybackStatusUpdate={(status) => {
-            if (status.isPlaying === false) {
-              setPlay(false);
+            if (status.didJustFinish) {
+              setPlay(false); // Reset to thumbnail state
             }
           }}
         />
