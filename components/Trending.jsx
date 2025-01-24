@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ResizeMode, Video } from "expo-av";
+import { VideoView, useVideoPlayer } from "expo-video"; // Import from expo-video
 import * as Animatable from "react-native-animatable";
 import {
   FlatList,
   Image,
   ImageBackground,
+  StyleSheet,
   TouchableOpacity,
 } from "react-native";
 
@@ -30,6 +31,9 @@ const zoomOut = {
 
 const TrendingItem = ({ activeItem, item }) => {
   const [play, setPlay] = useState(false);
+  const player = useVideoPlayer(item.video, (player) => {
+    player.loop = false; // Set loop as needed
+  });
 
   return (
     <Animatable.View
@@ -38,14 +42,15 @@ const TrendingItem = ({ activeItem, item }) => {
       duration={500}
     >
       {play ? (
-        <Video
-          source={{ uri: item.video }}
-          className="w-52 h-72 rounded-[33px] mt-3 bg-white/10"
-          resizeMode={ResizeMode.CONTAIN}
-          useNativeControls
-          shouldPlay
+        <VideoView
+          player={player}
+          style={styles.video}
+          className="w-52 h-72 rounded-[33px] mt-3 bg-black"
+          allowsFullscreen
+          allowsPictureInPicture
+          nativeControls
           onPlaybackStatusUpdate={(status) => {
-            if (status.didJustFinish) {
+            if (status.isPlaying === false) {
               setPlay(false);
             }
           }}
@@ -54,7 +59,10 @@ const TrendingItem = ({ activeItem, item }) => {
         <TouchableOpacity
           className="relative flex justify-center items-center"
           activeOpacity={0.7}
-          onPress={() => setPlay(true)}
+          onPress={() => {
+            setPlay(true);
+            player.play(); // Start playing the video
+          }}
         >
           <ImageBackground
             source={{
@@ -102,3 +110,12 @@ const Trending = ({ posts }) => {
 };
 
 export default Trending;
+
+const styles = StyleSheet.create({
+  video: {
+    width: 208,
+    height: 288,
+    borderRadius: 16,
+    marginTop: 12
+  },
+});
