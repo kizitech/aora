@@ -2,6 +2,8 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, FlatList, TouchableOpacity } from "react-native";
 
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import { icons } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
 import { getUserPosts, signOut } from "../../lib/appwrite";
@@ -43,16 +45,22 @@ const Profile = () => {
                 )}
                 ListHeaderComponent={() => (
                     <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
-                        <TouchableOpacity
-                            onPress={logout}
-                            className="flex w-full items-end mb-10"
-                        >
-                            <Image
-                                source={icons.logout}
-                                resizeMode="contain"
-                                className="w-6 h-6"
-                            />
-                        </TouchableOpacity>
+                        <View className="flex-row gap-4 items-center justify-end w-full mb-10">
+                            <TouchableOpacity
+                                onPress={() => { }}
+                            >
+                                <MaterialIcons name="sunny" size={24} color="#fff" />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={logout}
+                            >
+                                <Image
+                                    source={icons.logout}
+                                    resizeMode="contain"
+                                    className="w-6 h-6"
+                                />
+                            </TouchableOpacity>
+                        </View>
 
                         <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
                             <Image
