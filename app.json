@@ -29,7 +29,21 @@
     },
     "plugins": [
       "expo-router",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-splash-screen",
+        {
+          "resizeMode": "contain",
+          "backgroundColor": "#f9fafb",
+          "image": "./assets/images/logo.png",
+          "dark": {
+            "resizeMode": "contain",
+            "image": "./assets/images/logo-light.png",
+            "backgroundColor": "#161622"
+          },
+          "imageWidth": 200
+        }
+      ]
     ]
   }
 }

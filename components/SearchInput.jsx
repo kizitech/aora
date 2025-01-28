@@ -11,7 +11,7 @@ const SearchInput = ({ initialQuery }) => {
   const [query, setQuery] = useState(initialQuery || "");
 
   return (
-    <View className="relative">
+    <View className="relative h-16">
       <TextInput
         className="text-base mt-0.5 text-black-200 dark:text-white flex-1 font-psemibold flex flex-row items-center space-x-4 w-full h-16 px-4 bg-gray-200 dark:bg-black-100 rounded-2xl border-2 focus:border-secondary border-neutral-300 dark:border-black-200"
         value={query}
