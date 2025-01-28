@@ -7,8 +7,11 @@ import { images } from "../../constants";
 import { CustomButton, FormField } from "../../components";
 import { getCurrentUser, signIn } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { useColorScheme } from "nativewind";
 
 const SignIn = () => {
+  const { colorScheme } = useColorScheme();
+
   const { setUser, setIsLoggedIn } = useGlobalContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -29,7 +32,7 @@ const SignIn = () => {
       setUser(result);
       setIsLoggedIn(true);
 
-      // Alert.alert("Success", "User signed in successfully");
+      Alert.alert("User signed in successfully");
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -39,7 +42,7 @@ const SignIn = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-gray-50 dark:bg-primary h-full">
       <ScrollView>
         <View
           className="w-full flex justify-center h-full px-4 my-6"
@@ -48,12 +51,12 @@ const SignIn = () => {
           }}
         >
           <Image
-            source={images.logo}
+            source={colorScheme === "dark" ? images.logoDark : images.logoLight}
             resizeMode="contain"
             className="w-[115px] h-[34px]"
           />
 
-          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
+          <Text className="text-2xl font-semibold text-primary dark:text-white mt-10 font-psemibold">
             Log in to Aora
           </Text>
 
@@ -80,7 +83,7 @@ const SignIn = () => {
           />
 
           <View className="flex justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
+            <Text className="text-lg text-gray-600 dark:text-gray-100 font-pregular">
               Don't have an account?
             </Text>
             <Link

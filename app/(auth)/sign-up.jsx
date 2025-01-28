@@ -7,8 +7,10 @@ import { images } from "../../constants";
 import { createUser } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { useColorScheme } from "nativewind";
 
 const SignUp = () => {
+  const { colorScheme } = useColorScheme();
   const { setUser, setIsLoggedIn } = useGlobalContext();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +40,7 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-gray-50 dark:bg-primary h-full">
       <ScrollView>
         <View
           className="w-full flex justify-center h-full px-4 my-6"
@@ -47,12 +49,12 @@ const SignUp = () => {
           }}
         >
           <Image
-            source={images.logo}
+            source={colorScheme === "dark" ? images.logoDark : images.logoLight}
             resizeMode="contain"
             className="w-[115px] h-[34px]"
           />
 
-          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
+          <Text className="text-2xl font-semibold text-primary dark:text-white mt-10 font-psemibold">
             Sign Up to Aora
           </Text>
 
@@ -86,7 +88,7 @@ const SignUp = () => {
           />
 
           <View className="flex justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
+            <Text className="text-lg text-gray-600 dark:text-gray-100 font-pregular">
               Have an account already?
             </Text>
             <Link

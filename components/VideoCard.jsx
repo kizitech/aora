@@ -23,13 +23,13 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
 
           <View className="flex justify-center flex-1 ml-3 gap-y-1">
             <Text
-              className="font-psemibold text-sm text-white"
+              className="font-psemibold text-sm text-gray-900 dark:text-white"
               numberOfLines={1}
             >
               {title}
             </Text>
             <Text
-              className="text-xs text-gray-100 font-pregular"
+              className="text-xs text-gray-500 dark:text-gray-100 font-pregular"
               numberOfLines={1}
             >
               {creator}
@@ -38,7 +38,7 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
         </View>
 
         <View className="pt-2">
-          <Image source={icons.menu} className="w-5 h-5" resizeMode="contain" />
+          <Image source={icons.menu} tintColor={"#555555"} className="w-5 h-5" resizeMode="contain" />
         </View>
       </View>
 

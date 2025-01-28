@@ -102,9 +102,9 @@ const Create = () => {
 
 
     return (
-        <SafeAreaView className="bg-primary h-full">
+        <SafeAreaView className="bg-gray-50 dark:bg-primary h-screen">
             <ScrollView className="px-4 mt-6">
-                <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
+                <Text className="text-2xl text-primary dark:text-white font-psemibold">Upload Video</Text>
 
                 <FormField
                     title="Video Title"
@@ -115,7 +115,7 @@ const Create = () => {
                 />
 
                 <View className="mt-7 space-y-2">
-                    <Text className="text-base text-gray-100 font-pmedium mb-1">
+                    <Text className="text-base text-gray-600 dark:text-gray-100 font-pmedium mb-1.5">
                         Upload Video
                     </Text>
 
@@ -129,8 +129,8 @@ const Create = () => {
                                 />
                             </View>
                         ) : (
-                            <View className="w-full h-40 px-4 bg-black-100 rounded-2xl border border-black-200 flex justify-center items-center">
-                                <View className="w-14 h-14 border border-dashed border-secondary-100 flex justify-center items-center">
+                            <View className="w-full h-40 px-4 bg-gray-200 dark:bg-black-100 rounded-2xl border-2 border-neutral-300 dark:border-black-200 flex justify-center items-center">
+                                <View className="w-14 h-14 border border-dashed border-secondary-100 dark:border-secondary flex justify-center items-center">
                                     <Image
                                         source={icons.upload}
                                         resizeMode="contain"
@@ -144,7 +144,7 @@ const Create = () => {
                 </View>
 
                 <View className="mt-7 space-y-2">
-                    <Text className="text-base text-gray-100 font-pmedium mb-1">
+                    <Text className="text-base text-gray-600 dark:text-gray-100 font-pmedium mb-1">
                         Thumbnail Image
                     </Text>
 
@@ -156,14 +156,14 @@ const Create = () => {
                                 className="w-full h-64 rounded-2xl"
                             />
                         ) : (
-                            <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 flex justify-center items-center flex-row space-x-2">
+                            <View className="w-full h-16 px-4 bg-gray-200 dark:bg-black-100 rounded-2xl border-2 border-neutral-300 dark:border-black-200 flex justify-center items-center flex-row space-x-2">
                                 <Image
                                     source={icons.upload}
                                     resizeMode="contain"
                                     alt="upload"
                                     className="w-5 h-5"
                                 />
-                                <Text className="text-sm text-gray-100 font-pmedium ml-1">
+                                <Text className="text-sm text-[#7B7B8B] dark:text-gray-100 font-pmedium ml-1">
                                     Choose a file
                                 </Text>
                             </View>
@@ -182,7 +182,7 @@ const Create = () => {
                 <CustomButton
                     title="Submit & Publish"
                     handlePress={submit}
-                    containerStyles="mt-7"
+                    containerStyles="mt-12"
                     isLoading={uploading}
                 />
             </ScrollView>

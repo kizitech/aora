@@ -2,8 +2,6 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, FlatList, TouchableOpacity } from "react-native";
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
 import { icons } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
 import { getUserPosts, signOut } from "../../lib/appwrite";
@@ -23,7 +21,7 @@ const Profile = () => {
     };
 
     return (
-        <SafeAreaView className="bg-primary h-full">
+        <SafeAreaView className="bg-gray-50 dark:bg-primary h-screen">
             <FlatList
                 data={posts}
                 keyExtractor={(item) => item.$id}
@@ -46,11 +44,6 @@ const Profile = () => {
                 ListHeaderComponent={() => (
                     <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
                         <View className="flex-row gap-4 items-center justify-end w-full mb-10">
-                            <TouchableOpacity
-                                onPress={() => { }}
-                            >
-                                <MaterialIcons name="sunny" size={24} color="#fff" />
-                            </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={logout}
                             >

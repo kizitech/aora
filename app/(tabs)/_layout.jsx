@@ -35,7 +35,7 @@ const TabLayout = () => {
                         backgroundColor: "#161622",
                         borderTopWidth: 1,
                         borderTopColor: "#232533",
-                        height: 80,
+                        height: 86,
                     },
                 }}
             >
@@ -55,22 +55,6 @@ const TabLayout = () => {
                     }}
                 />
                 <Tabs.Screen
-                    name="favourites"
-                    options={{
-                        title: "Favourites",
-                        headerShown: false,
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.favourites}
-                                color={color}
-                                name="Favorites"
-                                focused={focused}
-                            />
-                        ),
-                    }}
-                />
-
-                <Tabs.Screen
                     name="create"
                     options={{
                         title: "Create",
@@ -80,6 +64,21 @@ const TabLayout = () => {
                                 icon={icons.plus}
                                 color={color}
                                 name="Create"
+                                focused={focused}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="favourites"
+                    options={{
+                        title: "Favourites",
+                        headerShown: false,
+                        tabBarIcon: ({ color, focused }) => (
+                            <TabIcon
+                                icon={icons.favourites}
+                                color={color}
+                                name="Favorites"
                                 focused={focused}
                             />
                         ),
