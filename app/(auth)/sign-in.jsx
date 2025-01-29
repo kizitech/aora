@@ -29,16 +29,17 @@ const SignIn = () => {
     try {
       await signIn(form.email, form.password);
       const result = await getCurrentUser();
+      if (!result) throw new Error("User retrieval failed");
+
       setUser(result);
       setIsLoggedIn(true);
-
       Alert.alert("User signed in successfully");
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
-    } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return (
