@@ -1,42 +1,57 @@
-import React, { useState } from 'react'
-import { Alert, StyleSheet, View } from 'react-native'
-import { supabase } from '../../lib/supabase'
-import { Button, Input } from '@rneui/themed'
-import { router } from 'expo-router'
+import React, { useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
+import { supabase } from '../../lib/supabase';
+import { Button, Input } from '@rneui/themed';
+import { router } from 'expo-router';
 
 const Auth = () => {
-
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function signInWithEmail() {
-        setLoading(true)
+        setLoading(true);
+        console.log('Signing in with email:', email);
+
         const { error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password,
-        })
+        });
 
-        if (error) Alert.alert(error.message)
-        setLoading(false)
+        if (error) {
+            console.error('Sign In Error:', error);
+            Alert.alert(error.message);
+        } else {
+            console.log('Sign In Successful');
+            Alert.alert('Sign Up Successful');
+            router.push('/working-page');
+        }
+
+        setLoading(false);
     }
 
     async function signUpWithEmail() {
-        setLoading(true)
+        setLoading(true);
+        console.log('Signing up with email:', email);
+
         const {
             data: { session },
             error,
         } = await supabase.auth.signUp({
             email: email,
             password: password,
-        })
+        });
 
-        if (error) Alert.alert(error.message)
-        if (session) Alert.alert('Sign Up Successful')
-        if (session) router.push('/working-page')
-        setLoading(false)
+        if (error) {
+            console.error('Sign Up Error:', error);
+            Alert.alert(error.message);
+        } else {
+            console.log('Sign Up Successful:', session);
+            Alert.alert('Sign Up Successful');
+            router.push('/working-page');
+        }
 
-        // console.log('Sign Up Successful:' data)
+        setLoading(false);
     }
 
     return (
