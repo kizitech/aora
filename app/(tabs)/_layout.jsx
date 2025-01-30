@@ -102,7 +102,7 @@ const TabLayout = () => {
             </Tabs>
 
             <Loader isLoading={loading} />
-            <StatusBar backgroundColor="#161622" style="light" />
+            <StatusBar backgroundColor="#161622" style="auto" />
         </>
     );
 };
