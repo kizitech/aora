@@ -24,6 +24,18 @@ const AuthLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="test"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="working-page"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
 
       <Loader isLoading={loading} />
