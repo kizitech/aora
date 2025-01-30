@@ -6,7 +6,7 @@ import { icons } from "../../constants";
 import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
-const TabIcon = ({ icon, color, name, focused }) => {
+const TabIcon = ({ icon, color }) => {
     return (
         <View className="flex items-center justify-center gap-2">
             <Image
