@@ -5,9 +5,11 @@ import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
 const AuthLayout = () => {
-  const { loading, isLogged } = useGlobalContext();
+  const { isLoggedIn, isLoading } = useGlobalContext();
 
-  if (!loading && isLogged) return <Redirect href="/home" />;
+  if (isLoading) return <Loader isLoading={true} />;
+
+  if (isLoggedIn) return <Redirect href="/home" />;
 
   return (
     <>
@@ -30,15 +32,8 @@ const AuthLayout = () => {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="working-page"
-          options={{
-            headerShown: false,
-          }}
-        />
       </Stack>
 
-      <Loader isLoading={loading} />
       <StatusBar backgroundColor="#161622" style="auto" />
     </>
   );

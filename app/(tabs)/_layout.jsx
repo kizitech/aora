@@ -1,9 +1,8 @@
-import { StatusBar } from "expo-status-bar";
-import { Redirect, Tabs } from "expo-router";
-import { Image, Text, View } from "react-native";
-
 import { icons } from "../../constants";
 import { Loader } from "../../components";
+import { Image, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { Redirect, Tabs } from "expo-router";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
 const TabIcon = ({ icon, color }) => {
@@ -20,9 +19,11 @@ const TabIcon = ({ icon, color }) => {
 };
 
 const TabLayout = () => {
-    const { loading, isLoggedIn } = useGlobalContext();
+    const { isLoggedIn, isLoading } = useGlobalContext();
 
-    if (!loading && !isLoggedIn) return <Redirect href="/sign-in" />;
+    if (isLoading) return <Loader isLoading={true} />;
+
+    if (!isLoggedIn) return <Redirect href="/sign-in" />;
 
     return (
         <>
@@ -44,13 +45,8 @@ const TabLayout = () => {
                     options={{
                         title: "Home",
                         headerShown: false,
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.home}
-                                color={color}
-                                name="Home"
-                                focused={focused}
-                            />
+                        tabBarIcon: ({ color }) => (
+                            <TabIcon icon={icons.home} color={color} />
                         ),
                     }}
                 />
@@ -59,13 +55,8 @@ const TabLayout = () => {
                     options={{
                         title: "Create",
                         headerShown: false,
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.plus}
-                                color={color}
-                                name="Create"
-                                focused={focused}
-                            />
+                        tabBarIcon: ({ color }) => (
+                            <TabIcon icon={icons.plus} color={color} />
                         ),
                     }}
                 />
@@ -74,13 +65,8 @@ const TabLayout = () => {
                     options={{
                         title: "Favourites",
                         headerShown: false,
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.favourites}
-                                color={color}
-                                name="Favorites"
-                                focused={focused}
-                            />
+                        tabBarIcon: ({ color }) => (
+                            <TabIcon icon={icons.favourites} color={color} />
                         ),
                     }}
                 />
@@ -89,19 +75,23 @@ const TabLayout = () => {
                     options={{
                         title: "Profile",
                         headerShown: false,
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
-                                icon={icons.profile}
-                                color={color}
-                                name="Profile"
-                                focused={focused}
-                            />
+                        tabBarIcon: ({ color }) => (
+                            <TabIcon icon={icons.profile} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
+                    name="working-page"
+                    options={{
+                        title: "Account",
+                        headerShown: false,
+                        tabBarIcon: ({ color }) => (
+                            <TabIcon icon={icons.profile} color={color} />
                         ),
                     }}
                 />
             </Tabs>
 
-            <Loader isLoading={loading} />
             <StatusBar backgroundColor="#161622" style="auto" />
         </>
     );

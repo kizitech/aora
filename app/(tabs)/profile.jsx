@@ -4,20 +4,28 @@ import { View, Image, FlatList, TouchableOpacity } from "react-native";
 
 import { icons } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
-import { getUserPosts, signOut } from "../../lib/appwrite";
+import { getUserPosts } from "../../lib/appwrite"; // Removed signOut import
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { EmptyState, InfoBox, VideoCard } from "../../components";
+import { supabase } from "../../lib/supabase";
 
 const Profile = () => {
     const { user, setUser, setIsLoggedIn } = useGlobalContext();
     const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
 
     const logout = async () => {
-        await signOut();
-        setUser(null);
-        setIsLoggedIn(false);
-
-        router.replace("/sign-in");
+        try {
+            // Sign out from Supabase
+            await supabase.auth.signOut();
+            // Update local context state
+            setUser(null);
+            setIsLoggedIn(false);
+            // Redirect to sign-in page
+            router.replace("/sign-in");
+        } catch (error) {
+            console.error("Error signing out:", error);
+            // Optionally handle error (e.g., show a notification)
+        }
     };
 
     return (
@@ -44,9 +52,7 @@ const Profile = () => {
                 ListHeaderComponent={() => (
                     <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
                         <View className="flex-row gap-4 items-center justify-end w-full mb-10">
-                            <TouchableOpacity
-                                onPress={logout}
-                            >
+                            <TouchableOpacity onPress={logout}>
                                 <Image
                                     source={icons.logout}
                                     resizeMode="contain"

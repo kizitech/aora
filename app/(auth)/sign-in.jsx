@@ -1,18 +1,16 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
+import { supabase } from '../../lib/supabase';
 import { CustomButton, FormField } from "../../components";
-import { getCurrentUser, signIn } from "../../lib/appwrite";
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { useColorScheme } from "nativewind";
 
 const SignIn = () => {
   const { colorScheme } = useColorScheme();
 
-  const { setUser, setIsLoggedIn } = useGlobalContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -20,26 +18,28 @@ const SignIn = () => {
   });
 
   const submit = async () => {
-    if (form.email === "" || form.password === "") {
-      Alert.alert("Please fill in all fields");
-    }
-
     setIsSubmitting(true);
+    const { email, password } = form;
 
-    try {
-      await signIn(form.email, form.password);
-      const result = await getCurrentUser();
-      if (!result) throw new Error("User retrieval failed");
-
-      setUser(result);
-      setIsLoggedIn(true);
-      Alert.alert("User signed in successfully");
-      router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
+    if (!email || !password) {
+      Alert.alert("Error", "Email and password are required.");
       setIsSubmitting(false);
+      return;
     }
 
+    const { user, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Welcome back!");
+      router.push("/home");
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -67,6 +67,7 @@ const SignIn = () => {
             handleChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
+            autoCapitalize="none"
           />
 
           <FormField
@@ -74,6 +75,7 @@ const SignIn = () => {
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
+            secureTextEntry
           />
 
           <CustomButton
@@ -88,7 +90,7 @@ const SignIn = () => {
               Don't have an account?
             </Text>
             <Link
-              href="/sign-up"
+              href="/home"
               className="text-lg font-psemibold text-secondary"
             >
               Signup

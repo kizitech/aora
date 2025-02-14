@@ -1,19 +1,14 @@
-import { useState, useEffect } from 'react';
-import { View } from 'react-native';
 import "../global.css";
 import { useFonts } from 'expo-font';
+import { supabase } from '../lib/supabase';
+import { useState, useEffect } from 'react';
 import { SplashScreen, Stack } from "expo-router";
 import GlobalProvider from "../context/GlobalProvider";
-import Auth from "./(auth)/test";
-import Account from './(auth)/working-page';
-import { supabase } from '../lib/supabase';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  const [session, setSession] = useState(null);
-
   const [fontsLoaded] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -27,21 +22,6 @@ const RootLayout = () => {
   });
 
   useEffect(() => {
-    // Fetch the current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => {
-      subscription?.unsubscribe(); // Clean up subscription on unmount
-    };
-  }, []);
-
-  useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
@@ -53,18 +33,11 @@ const RootLayout = () => {
 
   return (
     <GlobalProvider>
-      <View>
-        {session && session.user ? (
-          <Account key={session.user.id} session={session} />
-        ) : (
-          <Auth />
-        )}
-      </View>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="search/[query]" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );

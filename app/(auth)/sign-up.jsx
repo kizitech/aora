@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
-import { createUser } from "../../lib/appwrite";
+import { supabase } from '../../lib/supabase';
 import { CustomButton, FormField } from "../../components";
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { useColorScheme } from "nativewind";
 
 const SignUp = () => {
   const { colorScheme } = useColorScheme();
-  const { setUser, setIsLoggedIn } = useGlobalContext();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -21,22 +19,33 @@ const SignUp = () => {
   });
 
   const submit = async () => {
-    if (form.username === "" || form.email === "" || form.password === "") {
-      Alert.alert("Please fill in all fields");
-    }
-
     setIsSubmitting(true);
-    try {
-      const result = await createUser(form.email, form.password, form.username);
-      setUser(result);
-      setIsLoggedIn(true);
+    const { username, email, password } = form;
 
-      router.replace("/sign-in");
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
+    if (!username || !email || !password) {
+      Alert.alert("Error", "All fields are required.");
       setIsSubmitting(false);
+      return;
     }
+
+    const { user, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          username,
+        },
+      },
+    });
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Success", "Check your email for verification.");
+      router.push("/sign-in");
+    }
+
+    setIsSubmitting(false);
   };
 
   return (
