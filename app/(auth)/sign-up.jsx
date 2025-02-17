@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useRouter } from "expo-router"; // Import useRouter for navigation
+import { Link, useRouter } from "expo-router"; 
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
@@ -17,14 +17,14 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter(); // Initialize router for navigation
+  const router = useRouter();
 
   const submit = async () => {
-    // Validation: Check if all fields are filled
     if (!form.username || !form.email || !form.password) {
       Alert.alert("Please fill in all fields.");
-      return; // Prevent submission if any field is empty
+      return; 
     }
 
     setIsSubmitting(true);
@@ -86,7 +86,9 @@ const SignUp = () => {
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
-            secureTextEntry
+            secureTextEntry={!showPassword}
+            showPassword={showPassword} 
+            setShowPassword={setShowPassword} 
           />
 
           <CustomButton

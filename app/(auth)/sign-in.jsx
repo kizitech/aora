@@ -13,18 +13,19 @@ import { CustomButton, FormField } from "../../components";
 const SignIn = () => {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
-  const { setIsLoggedIn, setUser, setIsLoading } = useGlobalContext(); // Get context functions
+  const { setIsLoggedIn, setUser, setIsLoading } = useGlobalContext();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false); // Move showPassword here
 
   const submit = async () => {
     if (!form.email || !form.password) {
       Alert.alert("Please fill in both email and password fields.");
-      return; // Prevent submission if fields are empty
+      return;
     }
 
     setIsSubmitting(true);
@@ -40,19 +41,19 @@ const SignIn = () => {
 
       if (querySnapshot.empty) {
         Alert.alert("Invalid credentials. Please try again.");
-        setIsLoggedIn(false); // Ensure logged-in state is false on failure
+        setIsLoggedIn(false);
       } else {
-        const userData = querySnapshot.docs[0].data(); // Get user data
-        setUser(userData); // Set user data in context
-        setIsLoggedIn(true); // Set logged-in state
+        const userData = querySnapshot.docs[0].data();
+        setUser(userData);
+        setIsLoggedIn(true);
         Alert.alert("Login successful!");
-        router.push("/home"); // Navigate to the home page
+        router.push("/home");
       }
     } catch (error) {
       Alert.alert("Error signing in:", error.message);
     } finally {
       setIsSubmitting(false);
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
   };
 
@@ -89,7 +90,9 @@ const SignIn = () => {
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
-            secureTextEntry
+            secureTextEntry={!showPassword}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
           />
 
           <CustomButton
