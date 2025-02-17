@@ -1,30 +1,53 @@
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Image, FlatList, TouchableOpacity } from "react-native";
-
+import { View, Image, FlatList, TouchableOpacity, Text } from "react-native";
 import { icons } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
-import { getUserPosts } from "../../lib/appwrite"; // Removed signOut import
+import { getUserPosts } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { EmptyState, InfoBox, VideoCard } from "../../components";
-import { supabase } from "../../lib/supabase";
+import { getAuth, signOut } from "firebase/auth"; 
+import { StyleSheet } from "react-native";
 
 const Profile = () => {
     const { user, setUser, setIsLoggedIn } = useGlobalContext();
     const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
 
     const logout = async () => {
+        const auth = getAuth();
         try {
-            // Sign out from Supabase
-            await supabase.auth.signOut();
-            // Update local context state
+            await signOut(auth);
             setUser(null);
             setIsLoggedIn(false);
-            // Redirect to sign-in page
-            router.replace("/sign-in");
+            router.push('/sign-in');
         } catch (error) {
-            console.error("Error signing out:", error);
-            // Optionally handle error (e.g., show a notification)
+            console.error("Error signing out: ", error);
+        }
+    };
+
+    const getInitials = (name) => {
+        if (!name) return '';
+        const nameArray = name.split(' ');
+        const initials = nameArray.map(word => word.charAt(0).toUpperCase()).join('');
+        return initials;
+    };
+
+    const renderAvatar = () => {
+        if (user?.avatar) {
+            return (
+                <Image
+                    source={{ uri: user.avatar }}
+                    className="w-[90%] h-[90%] rounded-lg"
+                    resizeMode="cover"
+                />
+            );
+        } else {
+            const initials = getInitials(user?.username);
+            return (
+                <View style={styles.avatarPlaceholder}>
+                    <Text style={styles.initialsText}>{initials}</Text>
+                </View>
+            );
         }
     };
 
@@ -62,11 +85,7 @@ const Profile = () => {
                         </View>
 
                         <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
-                            <Image
-                                source={{ uri: user?.avatar }}
-                                className="w-[90%] h-[90%] rounded-lg"
-                                resizeMode="cover"
-                            />
+                            {renderAvatar()}
                         </View>
 
                         <InfoBox
@@ -94,5 +113,21 @@ const Profile = () => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    avatarPlaceholder: {
+        width: '90%',
+        height: '90%',
+        borderRadius: 8,
+        backgroundColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    initialsText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+});
 
 export default Profile;
