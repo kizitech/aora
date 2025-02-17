@@ -80,16 +80,6 @@ const TabLayout = () => {
                         ),
                     }}
                 />
-                <Tabs.Screen
-                    name="working-page"
-                    options={{
-                        title: "Account",
-                        headerShown: false,
-                        tabBarIcon: ({ color }) => (
-                            <TabIcon icon={icons.profile} color={color} />
-                        ),
-                    }}
-                />
             </Tabs>
 
             <StatusBar backgroundColor="#161622" style="auto" />

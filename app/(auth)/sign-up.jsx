@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Link, router } from "expo-router";
+import { Link, useRouter } from "expo-router"; // Import useRouter for navigation
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { db } from "../../lib/firebaseConfig"; 
+import { collection, addDoc } from "firebase/firestore";
 
 import { images } from "../../constants";
-import { supabase } from '../../lib/supabase';
 import { CustomButton, FormField } from "../../components";
 
 const SignUp = () => {
   const { colorScheme } = useColorScheme();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -18,34 +18,32 @@ const SignUp = () => {
     password: "",
   });
 
+  const router = useRouter(); // Initialize router for navigation
+
   const submit = async () => {
+    // Validation: Check if all fields are filled
+    if (!form.username || !form.email || !form.password) {
+      Alert.alert("Please fill in all fields.");
+      return; // Prevent submission if any field is empty
+    }
+
     setIsSubmitting(true);
-    const { username, email, password } = form;
+    try {
+      const docRef = await addDoc(collection(db, "users"), {
+        username: form.username,
+        email: form.email,
+        password: form.password, 
+      });
+      Alert.alert("Signup successful!", `User ID: ${docRef.id}`);
 
-    if (!username || !email || !password) {
-      Alert.alert("Error", "All fields are required.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const { user, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username,
-        },
-      },
-    });
-
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      Alert.alert("Success", "Check your email for verification.");
       router.push("/sign-in");
+      
+      setForm({ username: "", email: "", password: "" });
+    } catch (error) {
+      Alert.alert("Error signing up:", error.message);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   };
 
   return (
@@ -80,6 +78,7 @@ const SignUp = () => {
             handleChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
             keyboardType="email-address"
+            autoCapitalize="none"
           />
 
           <FormField
@@ -87,6 +86,7 @@ const SignUp = () => {
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
+            secureTextEntry
           />
 
           <CustomButton

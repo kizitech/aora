@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Link, router } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { db } from "../../lib/firebaseConfig"; // Adjust the path as necessary
+import { collection, query, where, getDocs } from "firebase/firestore"; // Import Firestore functions
+import { useGlobalContext } from "../../context/GlobalProvider"; // Import the global context
 
 import { images } from "../../constants";
-import { supabase } from '../../lib/supabase';
 import { CustomButton, FormField } from "../../components";
 
 const SignIn = () => {
   const { colorScheme } = useColorScheme();
+  const router = useRouter();
+  const { setIsLoggedIn, setUser, setIsLoading } = useGlobalContext(); // Get context functions
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -18,28 +22,38 @@ const SignIn = () => {
   });
 
   const submit = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert("Please fill in both email and password fields.");
+      return; // Prevent submission if fields are empty
+    }
+
     setIsSubmitting(true);
-    const { email, password } = form;
+    setIsLoading(true);
+    try {
+      const userQuery = query(
+        collection(db, "users"),
+        where("email", "==", form.email),
+        where("password", "==", form.password) 
+      );
 
-    if (!email || !password) {
-      Alert.alert("Error", "Email and password are required.");
+      const querySnapshot = await getDocs(userQuery);
+
+      if (querySnapshot.empty) {
+        Alert.alert("Invalid credentials. Please try again.");
+        setIsLoggedIn(false); // Ensure logged-in state is false on failure
+      } else {
+        const userData = querySnapshot.docs[0].data(); // Get user data
+        setUser(userData); // Set user data in context
+        setIsLoggedIn(true); // Set logged-in state
+        Alert.alert("Login successful!");
+        router.push("/home"); // Navigate to the home page
+      }
+    } catch (error) {
+      Alert.alert("Error signing in:", error.message);
+    } finally {
       setIsSubmitting(false);
-      return;
+      setIsLoading(false); // Reset loading state
     }
-
-    const { user, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      Alert.alert("Success", "Welcome back!");
-      router.push("/home");
-    }
-
-    setIsSubmitting(false);
   };
 
   return (
@@ -90,7 +104,7 @@ const SignIn = () => {
               Don't have an account?
             </Text>
             <Link
-              href="/home"
+              href="/sign-up"
               className="text-lg font-psemibold text-secondary"
             >
               Signup

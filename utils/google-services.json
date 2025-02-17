@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "921060383149",
+    "project_id": "aora-native-app-f65c6",
+    "storage_bucket": "aora-native-app-f65c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921060383149:android:ba6ce915a6ad3f446fe924",
+        "android_client_info": {
+          "package_name": "com.kizitech.aora"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsQ7r5LXNR1MZ2XJM0_1RCcLxOSnDgUJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
