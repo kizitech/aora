@@ -34,7 +34,6 @@ const SignUp = () => {
         email: form.email,
         password: form.password, 
       });
-      Alert.alert("Signup successful!", `User ID: ${docRef.id}`);
 
       router.push("/sign-in");
       
