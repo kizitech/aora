@@ -44,6 +44,15 @@
           "imageWidth": 200
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c1b950ec-8b1a-4171-9a1f-7cb205a5691a"
+      }
+    },
+    "owner": "kizitech"
   }
 }
