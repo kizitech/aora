@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum NFTStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SOLD
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum Currency {
+  ETH
+  USDT
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  username          String   @unique
+  passwordHash      String
+  encryptedMnemonic String?
+  walletAddress     String?  @unique
+  role              UserRole @default(USER)
+  avatarUrl         String?
+  bio               String?
+  isVerified        Boolean  @default(false)
+  emailVerified     Boolean  @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  nfts            NFT[]
+  orders          Order[]         @relation("BuyerOrders")
+  sales           Order[]         @relation("SellerOrders")
+  cartItems       CartItem[]
+  approvedNFTs    NFT[]           @relation("ApprovedBy")
+  adminLogs       AdminLog[]
+  refreshTokens   RefreshToken[]
+  notifications   Notification[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model NFT {
+  id              String    @id @default(cuid())
+  tokenId         BigInt?   // On-chain token ID (null for pending NFTs)
+  contractAddress String?   // Contract address (null for pending NFTs)
+  creatorId       String
+  creator         User      @relation(fields: [creatorId], references: [id])
+  title           String
+  description     String
+  imageUrl        String
+  thumbnailUrl    String?
+  metadataUrl     String?   // IPFS metadata URL
+  price           Decimal?
+  currency        Currency? @default(ETH)
+  status          NFTStatus @default(PENDING)
+  approvalNotes   String?
+  approvedById    String?
+  approvedBy      User?     @relation("ApprovedBy", fields: [approvedById], references: [id])
+  royaltyPercent  Decimal?  @default(0)
+  categories      String[]  // Array of category names
+  tags            String[]  // Array of tags
+  views           Int       @default(0)
+  likes           Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  orders    Order[]
+  cartItems CartItem[]
+
+  @@map("nfts")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  buyerId         String
+  buyer           User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  sellerId        String
+  seller          User        @relation("SellerOrders", fields: [sellerId], references: [id])
+  nftId           String
+  nft             NFT         @relation(fields: [nftId], references: [id])
+  price           Decimal
+  currency        Currency    @default(ETH)
+  status          OrderStatus @default(PENDING)
+  transactionHash String?     // Blockchain transaction hash
+  blockNumber     BigInt?     // Block number where transaction was confirmed
+  gasUsed         BigInt?     // Gas used for the transaction
+  marketplaceFee  Decimal?    // Fee paid to marketplace
+  royaltyFee      Decimal?    // Royalty fee paid to creator
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model CartItem {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nftId  String
+  nft    NFT    @relation(fields: [nftId], references: [id], onDelete: Cascade)
+  addedAt DateTime @default(now())
+
+  @@unique([userId, nftId])
+  @@map("cart_items")
+}
+
+model AdminLog {
+  id          String   @id @default(cuid())
+  adminId     String
+  admin       User     @relation(fields: [adminId], references: [id])
+  action      String   // Type of action (APPROVE_NFT, REJECT_NFT, etc.)
+  details     Json?    // Additional details about the action
+  targetType  String?  // Type of target (NFT, USER, etc.)
+  targetId    String?  // ID of the target
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("admin_logs")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   // NFT_APPROVED, NFT_REJECTED, NFT_SOLD, etc.
+  data      Json?    // Additional data for the notification
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  bannerUrl   String?
+  creatorId   String?
+  featured    Boolean  @default(false)
+  verified    Boolean  @default(false)
+  volume      Decimal  @default(0)
+  floorPrice  Decimal?
+  itemCount   Int      @default(0)
+  ownerCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("collections")
+}
+
+model ContentPage {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   // HTML content
+  metaTitle String?
+  metaDescription String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("content_pages")
+}
+
+model Settings {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  type  String @default("string") // string, number, boolean, json
+
+  @@map("settings")
+}
+
+model BlockchainTransaction {
+  id              String   @id @default(cuid())
+  hash            String   @unique
+  blockNumber     BigInt
+  blockHash       String
+  transactionIndex Int
+  from            String
+  to              String
+  value           String
+  gasUsed         BigInt
+  gasPrice        String
+  status          Int      // 1 for success, 0 for failure
+  type            String   // MINT, TRANSFER, APPROVE, etc.
+  contractAddress String?
+  tokenId         BigInt?
+  createdAt       DateTime @default(now())
+
+  @@map("blockchain_transactions")
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  metric    String   // daily_sales, daily_users, etc.
+  value     Decimal
+  data      Json?    // Additional metric data
+  createdAt DateTime @default(now())
+
+  @@unique([date, metric])
+  @@map("analytics")
+}
